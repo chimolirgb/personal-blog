@@ -1,2 +1,3 @@
-export SECRET_KEY='yaaaas'
-python3 manage.py server
+export SECRET_KEY='hjjk679f@holl*hj%vmHFbk'
+
+python3.8 manage.py server

@@ -1,32 +1,29 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField, SelectField
-from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
-from app.models import User
-
+from wtforms import ValidationError
+from ..models import User
+from wtforms import StringField,PasswordField,SubmitField,BooleanField
+from wtforms.validators import Required,Email,EqualTo
 
 class RegistrationForm(FlaskForm):
-    username = StringField('Username',
-                           validators=[DataRequired(), Length(min=2, max=10)])
-    email = StringField('Email',
-                        validators=[DataRequired(), Email()])
-    password = PasswordField('Password', validators=[DataRequired()])
-    confirm_password = PasswordField('Confirm Password',
-                                     validators=[DataRequired(), EqualTo('password')])
+    email = StringField('Your Email Address',validators=[Required(),Email()])
+    username = StringField('Enter your username',validators = [Required()])
+    fullname = StringField('Enter your Fullnames',validators = [Required()])
+    password = PasswordField('Password',validators = [Required(), EqualTo('password_confirm',message = 'Passwords must match')])
+    password_confirm = PasswordField('Confirm Passwords',validators = [Required()])
     submit = SubmitField('Sign Up')
 
-    def validate_username(self, username):
-        user = User.query.filter_by(username=username.data).first()
-        if user:
-            raise ValidationError('That username is taken. Please choose a different one.')
 
-    def validate_email(self, email):
-        user = User.query.filter_by(email=email.data).first()
-        if user:
-            raise ValidationError('That email is taken. Please choose a different one.')
+    def validate_email(self,data_field):
+        if User.query.filter_by(email =data_field.data).first():
+            raise ValidationError('There is an account with that email')
+
+    def validate_username(self,data_field):
+        if User.query.filter_by(username = data_field.data).first():
+            raise ValidationError('That username is taken')
 
 class LoginForm(FlaskForm):
-    email = StringField('Email',
-                        validators=[DataRequired(), Email()])
-    password = PasswordField('Password', validators=[DataRequired()])
-    remember = BooleanField('Remember Me')
+
+    email = StringField('Your Email Address',validators=[Required(),Email()])
+    password = PasswordField('Password',validators =[Required()])
+    remember = BooleanField('Remember me')
     submit = SubmitField('Login')
