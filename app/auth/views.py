@@ -26,12 +26,9 @@ def register():
         user = User(email = form.email.data,fullname = form.fullname.data,username = form.username.data,password = form.password.data)
         db.session.add(user)
         db.session.commit()
-        try:
-            mail_message("Welcome to My blog ","email/welcome_user",user.email,user=user)
-        except:
-            return redirect(url_for('auth.login'))
+        return redirect(url_for('auth.login'))
 
-        title = 'New Account'
+    title = 'New Account'
 
     return render_template('auth/register.html',registration_form = form)   
 
