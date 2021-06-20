@@ -59,7 +59,7 @@ def newBlog():
     if blogForm.validate_on_submit():
         titleBlog=blogForm.blogTitle.data
         description = blogForm.blogDescription.data
-        newBlog = Blog(title_blog=titleBlog, description=description, users= current_user)
+        newBlog = Blog(title_blog=titleBlog, description=description, user= current_user)
         newBlog.saveBlog()
         return redirect(url_for('main.allBlogs'))
     title = 'New Blog'
