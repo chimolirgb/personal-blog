@@ -2,9 +2,10 @@ from flask import render_template,request,redirect,url_for,flash,abort
 from . import main
 from .. import db,photos
 from flask_login import login_user,logout_user,login_required,current_user
+from ..emails import mail_message
 from ..requests import getQuotes
 from .forms import BlogForm,CommentForm,updateProfile
-from ..models import Blog,Comment,User
+from ..models import Blog,Comment,User,Subscriber
 
 @main.route('/',methods = ['GET'])
 def index():
@@ -121,3 +122,20 @@ def updateBlog(id):
         form.blogTitle.data = blog.title_blog
         form.blogDescription.data = blog.description
     return render_template('updateBlog.html', form=form)
+
+   # Saving Subscribers
+@main.route('/subscribe',methods = ['POST','GET'])
+def subscribe():
+  
+    check = Subscriber.query.filter_by(email = request.form.get('subscriber')).first()
+    if check == request.form.get('subscriber'):
+      return redirect(url_for('main.index'))
+    else:
+      email = request.form.get('subscriber')
+      print(email)
+      new_subscriber = Subscriber(email = email)
+      new_subscriber.save_subscriber()
+      mail_message("Subscribed to Blog quotes","email/welcome_subscriber", new_subscriber.email, new_subscriber=new_subscriber)
+      flash('Successfuly subscribed')
+      return redirect(url_for('main.choose_blog', email = new_subscriber.email))
+ 

@@ -88,4 +88,20 @@ class Comment(db.Model):
         db.session.delete(self)
         db.session.commit()
     def __repr__(self):
-        return f'Comments: {self.comment}'        
+        return f'Comments: {self.comment}' 
+
+
+# --------------------------------------SUBSCRIBERS-------------------------------------------------------------
+
+class Subscriber(db.Model,UserMixin):
+    __tablename__='subscribers'
+
+    id=db.Column(db.Integer,primary_key=True)
+    email = db.Column(db.String(255),unique=True,index=True)
+    movies =  db.Column(db.Integer,db.ForeignKey("movies.id"))
+    def save_subscriber(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def __repr__(self):
+        return f'Subscriber {self.email}'
